@@ -1,0 +1,113 @@
+\chapter{An Overview of Related Work}\label{chap:related_work}
+\graphicspath{{Chapter2/}}
+
+Recent decades have witnessed a growing interest in visual quality assessment. Three pieces of knowledge are crucial for developing a robust and practical objective IQA framework,~\ie, knowledge about the physiological process that human eyes perceive visual signals, the statistical regularities of pristine and degraded images, and the image degradation process~\citep{wang2011reduced}. Faced with an~\emph{embarras~de~richesse}, in this Chapter, we summarize some representative works of objective and general-purpose IQA methods, categorized via the presence of reference images,~\ie, FR-IQA, RR-IQA, and NR-IQA.
+%\begin{figure}[!ht]
+%	\centering
+%	\begin{minipage}[t]{\linewidth}
+%		\centering
+%		\includegraphics[width=5.6in]{fig/Knowledges.png}
+%	\end{minipage}
+%	\caption{Three pieces of knowledge for developing a robust and practical objective IQA framework. Image by courtesy of Wang~\etal\citep{wang2011reduced}.}
+%	\label{Knowledge}
+%\end{figure}
+
+First of all, a short history of FR-IQA is reviewed. FR-IQA methods are initially developed based on signal fidelity and error sensitivity~\citep{wang2006modern}. We also introduce differences between the bottom-up and top-down approaches. Then, we introduce the SSIM~\citep{wang2004image} and VIF~\citep{sheikh2006image}, which significantly advance the field. Finally, supervised learning-based methods are briefly presented for FR-IQA. In the following subsection, we introduce some literature of RR-IQA. According to the feature space of the extraction process, RR-IQA methods are divided into feature extraction in the spatial domain and transform domains, respectively. In the final subsection, the related work of NR-IQA is reviewed, which broadly organizes into the HVS-based, NSS-based, and codebook-based methods. The HVS-based NR-IQA algorithms are introduced from the viewpoints of CNN modeling, assistance with visual importance, assistance with the primary content of pristine images, assistance with the ranking-based methods, and assistance with graph representation learning. In addition, similar to RR-IQA, the NSS-based NR-IQA modeling methods are categorized by feature extraction in the spatial domain and transform domains, respectively.
+
+\section{Full-reference Image Quality Assessment}
+\subsection{Bottom-up and Top-down Approaches}
+The development of FR-IQA methods has gone through a long history, from signal fidelity and error sensitivity to the SSIM, VIF, and data-driven learning-based methods. First of all, the MSE and PSNR are widely applied based on signal fidelity because of their easier computation and optimization properties~\citep{wang2004image}. In~\refequ{MSE}, $x_i$ and $y_i$ denote the $i^{th}$ pixels of the reference and distorted images, and $I_{p}$ is the number of pixels in the image. However, because these two methods are inconsistent with subjective human visual perception, researchers tend to develop visually and perceptually relevant IQA methods.
+\begin{equation}
+	\mathrm{MSE}=\frac{1}{I_{p}} \sum_{i=1}^{I_{p}}\left(x_i-y_i\right)^2,
+	\label{MSE}
+\end{equation}
+\begin{equation}
+	\mathrm{PSNR}=10 \lg{\left(\frac{255^2}{\mathrm{MSE}}\right)}.
+	\label{PSNR}
+\end{equation}
+
+%\begin{figure}[!ht]
+%	\centering
+%	\begin{minipage}[t]{\linewidth}
+%		\centering
+%		\includegraphics[width=5.8in]{fig/Error_Sensitivity.png}
+%	\end{minipage}
+%	\caption{The error sensitivity-based framework. \\Image by courtesy of Wang~\etal\citep{wang2004image}.}
+%	\label{ERROR}
+%\end{figure}
+Following the widely-applied error sensitivity framework~\citep{wang2004image}, a series of bottom-up methods are proposed to functionalize the basic modules in HVS~\citep{daly1992visible, lubin1993use, watson1997visibility}. Later, top-down approaches gain much more popularity in imitating the overall function of HVS instead of modeling each basic module~\citep{wang2004image}. Specifically, the bottom-up approaches separately model each component,~\ie, basic module, of HVS, such as the Contrast Sensitivity Function (CSF) and contrast masking mechanism. One of the representative frameworks is error sensitivity, including pre-processing, CSF filtering, channel decomposition, error normalization, and error pooling~\citep{wang2004image}. On the other hand, the top-down approaches directly imitate the function of HVS as a single model and only consider the relationship between the input and output. The SSIM, VIF, and data-driven learning-based methods are the representative works of this type of method.
+
+\subsection{Structural Similarity and Visual Information Fidelity}
+The SSIM first decomposes image distortion into three parts,~\ie, luminance distortion, contrast distortion, and structural distortion. Then, it measures similarities between the distorted and reference images under these kinds of distortions. Finally, three similarity scores are combined to predict visual quality of the distorted image. Based on the SSIM, a wide variety of methods are appearing in the field of FR-IQA, such as the multiscale structural similarity (MS-SSIM)~\citep{wang2003multiscale}, complex wavelet structural similarity~\citep{sampat2009complex}, information content weighting multiscale structural similarity (IWSSIM)~\citep{wang2010information}, feature similarity (FSIM)~\citep{zhang2011fsim}, and structure and texture similarity (DISTS)~\citep{dingIQA}.
+%\begin{figure}[!ht]
+%	\centering
+%	\begin{minipage}[t]{\linewidth}
+%		\centering
+%		\includegraphics[width=5.8in]{fig/SSIM.png}
+%	\end{minipage}
+%	\caption{Computation framework of the SSIM Index. \\Image by courtesy of Wang~\etal\citep{wang2004image}.}
+%	\label{SSIM}
+%\end{figure}
+
+Sheikh~\etal propose a visual information fidelity metric based on the information theory. The idea is to measure the reserved information of the distorted image,~\ie, after distorting the reference image through a distortion channel. The Gaussian Scale Mixture (GSM) model in the wavelet domain is employed to build the source, distortion, and HVS models. Then, image quality is estimated through the mutual information between the distorted image and the reference image~\citep{sheikh2006image, sheikh2005information}. The VIF model has been deployed in the Netflix VMAF system~\citep{li2016toward}.
+%\begin{figure}[!ht]
+%	\centering
+%	\begin{minipage}[t]{\linewidth}
+%		\centering
+%		\includegraphics[width=4in]{fig/VIF.png}
+%	\end{minipage}
+%	\caption{Computation diagram of the VIF model. \\Image by courtesy of Sheikh~\etal\citep{sheikh2005information}.}
+%	\label{VIF}
+%\end{figure}
+
+\subsection{Learning-based Methods}
+Supervised learning-based methods directly imitate the functionality of HVS by training models to predict image quality with subjective opinions as labels. Typically, a loss function is applied to train the ``black box'' in an end-to-end manner. Such a method aims to predict quality scores as close as subjective opinions. Recently, the deep learning-based FR-IQA models have been widely adopted, and some of the representative works are~\citep{liang2016image, gao2017deepsim, kim2017deep, bosse2017deep, prashnani2018pieapp, dingIQA}.
+
+\section{Reduced-reference Image Quality Assessment}
+RR-IQA models aim to accurately predict the distorted images' quality, only giving limited information about the reference images. Partial information of the reference images,~\eg, a set of features (namely, RR features), is extracted at the sender side and will be transmitted to the receiver side through an ancillary channel. The receiver side will accomplish the same feature extraction process on the distorted images and then perform RR quality assessment by comparing the transmitted features of the reference images (called side information) and the extracted features of the distorted images~\citep{wang2011reduced}. 
+
+RR-IQA algorithms are broadly classified into two categories according to the feature space,~\ie, spatial domain and transform domains. Redi~\etal propose an RR-IQA approach based on the color correlogram. The method assesses image quality by analyzing the changes in color distributions~\citep{redi2010color}. Wu~\etal discover that the primary visual content disturbs image understanding and the residual uncertainty affects the comfort of visual perception. Then, they decompose the image into two parts,~\ie, the primary visual information and the residual uncertainty, and assess image quality by combining the fidelities of two parts~\citep{wu2013reduced}. Bampis~\etal employ a GSM model to derive entropies as RR features and estimate visual quality through the entropic difference between the distorted image and the reference image~\citep{bampis2017speed}. In addition, an RR-IQA model is proposed by Liu~\etal based on the Free Energy Principle and sparse representation in the spatial domain~\citep{liu2017reduced, friston2010free, friston2006free}.
+
+Based on NSS, Wang~\etal transform the image into the wavelet domain and estimate the Generalized Gaussian Distribution (GGD) parameters as RR features to predict image quality~\citep{wang2006quality}. Soundararajan~\etal introduce an RR-IQA method by measuring the entropic difference between the distorted and reference images. Entropy is estimated by parameters of the GSM distributions, which are fitted by the wavelet coefficients of the image~\citep{soundararajan2011rred}. Ma~\etal perform GGD fitting on the Discrete Cosine Transform (DCT) coefficients after image reconstruction and then apply the symmetrical City-Block Distance to measure the difference between the distorted image and the reference image~\citep{ma2011reduced}. Rehman~\etal propose an RR-IQA model based on the SSIM on the multiscale multiorientation divisive normalization transform domain~\citep{rehman2012reduced}. Xu~\etal perform the fractal analysis to images in the Log-Gabor domain and calculate the~$\mathrm{L_1}$~distance between feature vectors (fractal dimensions on the Log-Gabor subbands) of the reference and distorted images~\citep{xu2015fractal}. Last, Golestaneh~\etal take subbands' entropies as image features after the Discrete Wavelet Transform of the locally weighted gradient magnitudes~\citep{golestaneh2016reduced}.
+
+\section{No-reference/Blind Image Quality Assessment}
+The distortion-specific NR-IQA is first presented. Then, we review some literature on the general-purpose BIQA that handles a wide variety of distortions.
+
+\subsection{Distortion-specific Modeling}
+Works based on the knowledge of image degradation process assume the awareness of image distortion's type. Thus, they focus on building distortion-specific models, such as image compression~\citep{zhu2014no, liu2018end}, JPEG~\citep{wang2002no}, JPEG2000~\citep{sheikh2005no}, blur~\citep{wang2003local}, and ringing artifacts~\citep{liu2009no}. However, because distortions and artifacts are various and unknown, recent research pays more attention to general NR-IQA~\citep{mittal2012no}.
+
+\subsection{Human Visual System Modeling}
+In IQA, CNN is considerably favored due to its ``unreasonable" effectiveness of deep feature representation~\citep{zhang2018unreasonable}. The CNN-based NR-IQA algorithms can be roughly classified into five categories,~\ie, CNN modeling methods, methods assisted with visual importance information, methods assisted with reference images' information, methods assisted with the ranking-based methods, and methods assisted with graph representation learning.
+
+	\subsubsection{CNN Modeling}
+	In the deep-learning era, CNN has demonstrated superior prediction performance for IQA~\citep{kang2014convolutional, kang2015simultaneous, zhang2018blind, su2020blindly, wu2020end, tang2014blind, gu2017blind, talebi2018nima, zeng2017probabilistic}. Deep features from CNN are derived for visual quality estimation. Kang~\etal propose a shallow CNN to extract the learned quality-aware features~\citep{kang2014convolutional}. Later, distortion type identification is also involved, casting the method into a multi-task learning paradigm~\citep{kang2015simultaneous}. Ma~\etal introduce a deep CNN with the biologically-inspired Generalized Divisive Normalization (GDN) as activation functions for decorrelation. Meanwhile, a multi-task learning approach is employed to learn the distortion-aware features~\citep{ma2017end}. They further propose a feature fusion approach to fuse the distortion type and object semantic information via a bilinear pooling layer. Such a method performs well on distorted synthetic and authentic databases using the bilinear feature fusion~\citep{zhang2018blind}. Su~\etal employ a self-adaptive hyper network to learn the perceptual rules and content, revealing the significance and importance of semantics and content understanding to handle authentic distortions~\citep{su2020blindly}. Wu~\etal propose a cascaded CNN model motivated by the hierarchical degradation process of HVS~\citep{wu2020end}.
+	
+	\subsubsection{CNN Modeling Assisted with Visual Importance}
+	The first method is the patch weighting strategy to measure visual importance. Bosse~\etal employ a VGGNet with a weighted-average patch aggregation method~\citep{bosse2016deep, bosse2017deep}. Guan~\etal introduce a similar approach, where patches' weights are normalized by a Softmax function~\citep{guan2017visual}. 
+	
+	Another method is to apply the saliency or sensitivity maps. Jia~\etal apply the patch importance to image patches, achieved by saliency information~\citep{jia2018saliency}. Yang~\etal introduce a saliency-guided sub-network to produce saliency maps as spatial attention masks~\citep{yang2019sgdnet}. Kim~\etal integrate sensitivity maps into the network design, aiming to reflect the visual sensitivity characteristics of HVS~\citep{kim2017deep}.
+	
+	\subsubsection{CNN Modeling Assisted with pristine image}
+	During the training phase, Kim~\etal obtain much more accurate quality labels for image patches by using reference information and an FR-IQA method~\citep{kim2016fully}. The Free Energy Principle proposed in brain theory and neuroscience reveals that image distortion can be measured by the discrepancy between the image and its brain-predicted version~\citep{friston2010free, friston2006free}. 
+	
+	The second method is to generate pristine content. Zhai~\etal build an internal description of images via a generative model~\citep{Zhai2012}. Lin~\etal introduce an adversarial learning approach to generate hallucinated pristine images and benefite from the discrepancy map for quality prediction~\citep{lin2018hallucinated}. Chen~\etal restore the distorted image by the Generative Adversarial Network (GAN), and an attention-driven approach is introduced to estimate visual quality~\citep{chen2020no, goodfellow2020generative}. Min~\etal generate pseudo-reference images, whose visual quality may be worse than the distorted images. Then, features are extracted from the pseudo-reference images,~\eg, blockiness, sharpness, and noisiness~\citep{min2017blind}.
+	
+	\subsubsection{CNN Modeling Assisted with Learning-to-rank}
+	To train a more robust CNN by increasing the amount of data, the rank-based methods~\citep{ma2017dipiq, liu2017rankiqa, Ma2016Ranking, Xu2017Ranking} attract much more attention as the training samples can be significantly enriched in a paired manner. In~\citep{ma2017dipiq}, Ma~\etal adopt the discriminative image pairs for quality ranking learning. Besides, the Siamese network is utilized by~\citep{liu2017rankiqa} to process the ranked image pairs. The learned network is further finetuned for quality regression.
+	
+	\subsubsection{CNN Modeling Assisted with Graph Representation Learning}
+	Built upon CNN, recently, graph representation learning and non-local feature extraction methods are also presented for NR-IQA~\citep{sun2022graphiqa, golestaneh2021no}. Sun~\etal introduce graph representation learning to model the relationship of different distortions~\citep{sun2022graphiqa}. However, such a model is not specifically designed to extract non-local features. Golestaneh~\etal present a non-local representation method via a Transformer architecture~\citep{golestaneh2021no}, revealing that the non-local information plays an essential role in IQA. Nevertheless, there are still improving spaces for their method since the non-local information is only extracted from the high-level semantic feature maps.
+	
+\subsection{Natural Scene Statistics Modeling}
+The definition of natural images is subjective and generally refers to images captured by optical cameras~\citep{mittal2012no}. The non-random structures of natural images inhere statistical regularities in the physical world. Such regularities are termed as NSS. The differences between pristine and distorted images,~\ie, image degradation, are exhibited in the natural statistical behavior of images~\citep{wandell1995foundations, moorthy2011blind}. Thus, it is of great essence to analyze the statistical property of natural images~\citep{ghadiyaram2017perceptual}. 
+
+Early NR-IQA methods mainly explore the shared statistical behavior of natural images, where the distorted images' quality can be estimated by evaluating the destruction of NSS. The NSS can be analyzed in different domains, such as the spatial domain~\citep{mittal2012no}, frequency domain~\citep{saad2012blind, saad2010dct, lyu2008nonlinear}, wavelet and complex wavelet domain~\citep{wainwright1999scale, moorthy2011blind, moorthy2010two, tang2011learning, gao2013universal, zhang2014c}, contourlet domain~\citep{lu2010no}, and curvelet domain~\citep{liu2014no}.
+	
+Mittal~\etal indicate that the statistical dependency inside natural images is redundant. As a result, they propose a locally Mean Subtracted Contrast Normalized (MSCN) approach, namely, BRISQUE, to decorrelate the local pixels' second-order correlation along with the spatial separation. Further, they apply Gaussian models to fit the second-order statistics. The MSCN coefficients are modeled to measure the ``naturalness'' between the pristine and distorted images and lead to the Principal Component Analysis (PCA) and whitening-based representations~\citep{mittal2012no}. In addition, the proposed NIQE model fits the BRISQUE's NSS features via a Multivariate Gaussian model (MVG), instead of using the Support Vector Regression (SVR). Specifically, the NIQE first performs MVG to fit the BRISQUE features of the high-contrast pristine and distorted image blocks. Then, the mean vector and the covariance matrix are employed to measure image quality~\citep{mittal2012making}. Zhang~\etal extend the NIQE method with the consideration of extra statistics, such as gradients and colors~\citep{zhang2015feature}.
+	
+Saad~\etal introduce an NSS model built upon the DCT coefficients. They discover that the Fourier phase contains the most perceptually relevant information~\citep{saad2012blind, saad2010dct}. Besides, after the band-pass filtering, there are non-Gaussian marginal densities and elliptically symmetric joint densities inside natural images. Thus, Lyu~\etal employ Gaussian functions to model the elliptically and spherically symmetric densities~\citep{lyu2008nonlinear}. The problem with such band-pass filters is that they lead to heavy-tail marginals, and natural images still keep higher-order dependencies with non-Gaussian marginal distributions. Wainwright~\etal model the wavelet coefficients' marginal density by the generalized Gaussian mixtures~\citep{wainwright1999scale}. Moreover, Moorthy~\etal present the local image wavelet coefficients with divisive normalization. The distribution of coefficients are observed as Laplacian, and after applying the divisive normalization, it tends to be Gaussian-like~\citep{moorthy2011blind}. Other works, such as~\citep{moorthy2010two, tang2011learning, gao2013universal, zhang2014c}, also model NSS in the wavelet or complex wavelet domain. In addition, Liu~\etal introduce entropies from both spatial and spectral perspectives to predict image quality~\citep{liu2014no}. Last, Lu~\etal and Liu~\etal propose to extract NSS from images in the contourlet and curvelet domains, respectively~\citep{lu2010no, liu2014no}.
+
+The above classic image representations simplify the statistical properties of natural images. Thus, they pave a solid foundation for our work.
+
+\subsection{Codebook-based Modeling}
+The codebook-based learning models extract the quality-aware features from images by constructing a codebook, getting rid of the handcrafted feature design~\citep{ghadiyaram2017perceptual, xu2016blind, ye2012unsupervised, xue2014blind, ye2012no, xue2013learning, zhang2015som}. Ye~\etal propose a Codebook Representation for No-Reference Image Assessment (CORNIA), which applies the K-means clustering to construct an unlabeled codebook. Then, image representations are obtained via soft-assignment coding and max pooling on image blocks. Finally, image quality is predicted by a linear SVR~\citep{ye2012unsupervised, xu2016blind, zhang2015som}. Proposed by Xue~\etal, the QAC model performs quality-aware clustering where image blocks are clustered into several quality levels. The levels are based on quality scores given by FR-IQA methods. Next, cluster centers are constructed as codebooks to represent the image blocks' quality. Lastly, the final image quality can be obtained via a weighted-average pooling among all image blocks~\citep{xue2013learning}.
