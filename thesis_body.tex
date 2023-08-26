@@ -1,0 +1,71 @@
+\documentclass{cityuthesis}
+
+%\special{dvipdfmx:config z 0}
+\usepackage[numbers, sort&compress, square, comma]{natbib}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{paralist}
+\usepackage{multirow}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{comment}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{paralist}
+\usepackage{wrapfig}
+\usepackage{bbm}
+\usepackage{pdfpages}
+
+\input{macros}
+\doublespacing
+\definecolor{littlegray}{RGB}{150, 150, 150}
+\newcommand{\etal}{\textit{et al}.~}
+\newcommand{\ie}{\textit{i}.\textit{e}.}
+\newcommand{\eg}{\textit{e}.\textit{g}.}
+\newcommand{\reffig}[1]{Figure~\ref{#1}}
+\newcommand{\reftab}[1]{Table~\ref{#1}}
+\newcommand{\refsec}[1]{Section~\ref{#1}}
+\newcommand{\refequ}[1]{Equation~\ref{#1}}
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
+\let\cleardoublepage=\clearpage
+
+\begin{document}
+	\includepdf{Titlepage/titlepage.pdf}
+	\frontmatter
+	
+	\include{Abstract/abstract}
+	\includepdf[pages=-, pagecommand={\thispagestyle{plain}}]{QualifyingPanel.pdf}
+	\include{Acknowledgement/acknowledgement}
+	
+	\tableofcontents
+	\clearpage
+	\phantomsection
+	
+	\addcontentsline{toc}{chapter}{List of Figures}
+	\listoffigures
+	\phantomsection
+	
+	\listoftables
+	\addcontentsline{toc}{chapter}{List of Tables}
+	
+	\mainmatter
+	\include{Chapter1/chapter1}
+	\include{Chapter2/chapter2}
+	\include{Chapter3/chapter3}
+	\include{Chapter4/chapter4}
+	\include{Chapter5/chapter5}
+	\backmatter
+	
+	\include{Publication/publication}
+	\clearpage
+	\phantomsection
+	
+	\addcontentsline{toc}{chapter}{Bibliography}
+	\bibliographystyle{unsrtnat}
+	\bibliography{refs}
+\end{document}
